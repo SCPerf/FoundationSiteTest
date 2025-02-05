@@ -1,0 +1,37 @@
+name: Sample Action   # Note: Update this to be specific to your test
+
+on: 
+  workflow_dispatch:
+
+permissions: 
+  contents: read
+
+jobs:
+  Job:
+    name: Sample Execution  # Note: You can udpate this to be specific to your test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'Sitecore-PD-Sandbox/CreatePerformanceXMCloudDeployment'
+          ref: "master"
+          token: "${{ secrets.CREATEPERFORMANCEXMCLOUDDEPLOYMENT_ACCESS_TOKEN }}"
+          path: "xmclouddeployment"      
+
+      # Initialize
+      - name: Initialize
+        run: |
+          Set-Location ./xmclouddeployment
+          Write-Host "xmclouddeployment Dir ******************************"
+          ls
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "ReadMe"
+          path: ./xmclouddeployment/readme.md
+

@@ -1,0 +1,23 @@
+name: TestComposite Action
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  Job:
+    name: Sample Execution
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: Sitecore-PD-Sandbox/CreatePerformanceXMCloudDeployment@v0.32
+          
+
+      # Initialize
+      - name: Initialize
+        run: |
+          Set-Location ./xmclouddeployment
+          Write-Host "xmclouddeployment Dir ******************************"
+          ls

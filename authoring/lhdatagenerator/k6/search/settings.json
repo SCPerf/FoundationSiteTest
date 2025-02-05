@@ -1,0 +1,17 @@
+{ 
+    "debug": true,
+    "thinkTime": 1,
+    "thinkTimeVariance": 0.5,
+    "globalTimeout": 3000000,
+    "xmcloudrest_host": "xmclouddeploy-api-beta.sitecorecloud.io",
+    "xmcloudrest_client_id": "ZN4RRDTz32LB9XO1xNi0ISUbLULAKW04",
+    "xmcloudrest_client_secret": "1sb6YWGPbTsVrdp0cP24r9-W6L4v50MebEpxY84UKJoSah4nW38Fp_b08DvWNalF",
+    "xmcloudrest_auth_server": "https://auth-beta.sitecorecloud.io/oauth/token",
+    "xmcloudrest_audience": "https://xmclouddeploy-api-beta.sitecorecloud.io",
+    "xmcloudrest_grant_type": "client_credentials",
+    "StorageAccount": "qepeformanceteamresults",
+    "StorageKey": "6+J9a68xI395TrUlAoWF3gjoC7w2AQbnJt3eWa/sbrmfkSmpSOGFEpBdEDg//Y6y5gKcmw40R6XLY39jV/EOqA==",
+    "RebuildTableName": "XMCloudIndexRebuild",
+    "QueryTableName": "XMCloudIndexQuery",
+    "SearchStaxTableName": "XMCloudSearchStax"
+}

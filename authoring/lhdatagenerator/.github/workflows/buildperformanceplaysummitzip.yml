@@ -1,0 +1,86 @@
+name: Build Performance Play Summit Site Zip
+
+on: 
+  schedule:
+    - cron: '0 10 * * *'  # Everyday at 3am PST
+      
+  workflow_dispatch:
+    inputs:
+      container:
+        default: "xmcloudperformancefoundation"
+        description: "Container to upload the artifact."
+        required: true
+      storageAccount:
+        default: "qepeformanceteamresults"
+        description: "The storage account name used to upload artifact."
+        required: true
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PowerShell module cache
+        id: cacher
+        uses: actions/cache@v4
+        with:
+          path: "~/.local/share/powershell/Modules"
+          key: ${{ runner.os }}-Az-Storage
+      - name: Install required PowerShell modules
+        if: steps.cacher.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Az.Storage -ErrorAction Stop
+          Install-Module Az.Resources -ErrorAction Stop
+          Install-Module AzTable -ErrorAction Stop
+      - name: Checkout lhdatagenerator
+        uses: actions/checkout@v4
+        with:
+          path: "lhdatagenerator"
+
+      - name: Checkout Play Summit Site
+        uses: actions/checkout@v4
+        with:
+          repository: 'Sitecore/Sitecore.Demo.XmCloud.PlaySummit'
+          path: "src"
+
+      - name: Build Performance Foundation Artifact
+        shell: pwsh
+        run: |
+          ./lhdatagenerator/New-PerformancePlaySummitSitePackage.ps1
+      
+      - name: Create ZIp
+        shell: pwsh
+        run: |
+          rm -rf artifacts.zip
+          cd ./src
+          zip -r artifacts.zip .
+      
+      - name: Push to Blob
+        shell: pwsh
+        env:
+          BLOBSTORAGEKEY: ${{ secrets.BLOBSTORAGEKEY }}
+          CONTAINERNAME: ${{ github.event.inputs.container }}
+          STORAGEACCOUNTNAME: ${{ github.event.inputs.storageAccount }}
+        run: |
+          $storageAccountName = $env:STORAGEACCOUNTNAME
+          $containerName = $env:CONTAINERNAME
+          if (-not ($env:STORAGEACCOUNTNAME)) { $storageAccountName = "qepeformanceteamresults" }
+          if (-not ($env:CONTAINERNAME)) { $containerName = "xmcloudperformancefoundation" }
+          Write-Host "Storage Account Name: $storageAccountName"
+          Write-Host "Blob Container Name: $containerName"
+          $context = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $env:BLOBSTORAGEKEY
+          $blob = @{
+                    File             = "./src/artifacts.zip"
+                    Container        = $containerName
+                    Blob             = "playsummitartifacts.zip"
+                    Context          = $context
+                    StandardBlobTier = 'Hot'
+          }
+          Set-AzStorageBlobContent @blob -Force
+
+      # - name: Add Site to Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: "artifacts"
+      #     path: src
