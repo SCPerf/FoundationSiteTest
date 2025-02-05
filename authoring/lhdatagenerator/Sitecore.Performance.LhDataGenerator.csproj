@@ -26,10 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sitecore.XmCloud.ContentSearch" Version="1.*"/> 
-    <PackageReference Include="Sitecore.XmCloud.ContentSearch.Linq" Version="1.*"/>
-    <PackageReference Include="Sitecore.XmCloud.Kernel" Version="1.*"/>
-    <PackageReference Include="Sitecore.XmCloud.Mvc" Version="1.*"/>
+    <PackageReference Include="Sitecore.XmCloud.ContentSearch"/> 
+    <PackageReference Include="Sitecore.XmCloud.ContentSearch.Linq"/>
+    <PackageReference Include="Sitecore.XmCloud.Kernel"/>
+    <PackageReference Include="Sitecore.XmCloud.Mvc"/>
   </ItemGroup>
 
 </Project>
